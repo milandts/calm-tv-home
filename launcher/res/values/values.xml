@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Home" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:colorAccent">#FFFFFFFF</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <string name="app_name">TV Home</string>
+    <string name="service_label">Home-Taste für TV Home</string>
+    <string name="service_description">Öffnet TV Home, wenn du die Home-Taste der Fernbedienung drückst. Home gedrückt halten öffnet das Menü für Standby, Spiegelung und Profile.</string>
+</resources>

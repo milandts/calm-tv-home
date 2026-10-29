@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Banner (320x180) für die App-Liste von Fire TV: derselbe Abendhimmel mit Sonne und Dock wie das App-Symbol. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:viewportWidth="320" android:viewportHeight="180"
+    android:width="320dp" android:height="180dp">
+    <path
+        android:fillColor="#FF14213D"
+        android:pathData="M0,0 H320 V180 H0 Z" />
+    <path
+        android:fillColor="#FF1E3A5F"
+        android:pathData="M0,120 C70,96 130,112 190,100 C240,90 285,104 320,96 V180 H0 Z" />
+    <path
+        android:fillColor="#FFFFB340"
+        android:pathData="M232,52 m-20,0 a20,20 0 1 1 40,0 a20,20 0 1 1 -40,0 Z" />
+    <path
+        android:fillColor="#40FFFFFF"
+        android:pathData="M38,118 H282 A14,14 0 0 1 296,132 V142 A14,14 0 0 1 282,156 H38 A14,14 0 0 1 24,142 V132 A14,14 0 0 1 38,118 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M40,126 H78 V148 H40 Z M88,126 H126 V148 H88 Z M136,126 H174 V148 H136 Z M184,126 H222 V148 H184 Z M232,126 H270 V148 H232 Z" />
+</vector>

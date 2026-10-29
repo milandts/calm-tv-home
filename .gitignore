@@ -1,0 +1,29 @@
+# Bauergebnisse und Arbeitsordner
+out/
+work/
+
+# Signaturschlüssel und Kennwörter gehören NIE ins Repo (sie liegen in ~/.config/firestick-tvhome)
+*.keystore
+*.jks
+keystore.pass
+*.pass
+*.key
+*.pem
+.env
+
+# Screenshots und Logs enthalten Gerätenamen, Seriennummern, Konto und IP-Adressen
+*.png
+*.log
+report/
+screenshots/
+
+# heruntergeladene oder gebaute Binärdateien
+*.apk
+*.jpg
+!wallpapers/*.jpg
+.DS_Store
+__pycache__/
+
+# Hintergrundbilder werden von scripts/setup.sh geladen (Lizenzen je Bild in wallpapers.json), nie eingecheckt
+launcher/assets/wallpapers/
+release/

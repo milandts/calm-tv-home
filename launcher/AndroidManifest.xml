@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    package="app.calmtv.home"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:required="false" android:name="android.hardware.touchscreen" />
+    <uses-feature android:required="false" android:name="android.software.leanback" />
+
+    <!-- Nur zum Lesen, ob der DNS-Filter (VPN) läuft. Keine Internetberechtigung. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Wetterstand vom Bildschirmschoner lesen, nur für Apps mit demselben Schlüssel. Die Definition steht in beiden APKs. -->
+    <permission
+        android:protectionLevel="signature"
+        android:name="app.calmtv.home.permission.READ_WEATHER" />
+    <uses-permission android:name="app.calmtv.home.permission.READ_WEATHER" />
+
+    <application
+        android:theme="@style/Home"
+        android:label="@string/app_name"
+        android:icon="@drawable/icon"
+        android:banner="@drawable/banner"
+        android:allowBackup="false">
+
+        <!-- Fängt die HOME-Taste der Fernbedienung ab und holt TV Home nach vorn (siehe HomeKeyService). -->
+        <service
+            android:name=".HomeKeyService"
+            android:label="@string/service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/home_key_service" />
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+        </service>
+
+        <!-- Alarm des Einschlaf-Timers; nur TV Home selbst löst ihn aus. -->
+        <receiver
+            android:name=".SleepTimerReceiver"
+            android:exported="false" />
+
+        <activity
+            android:name=".HomeActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:excludeFromRecents="true"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|fontScale|locale">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
