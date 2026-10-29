@@ -168,8 +168,7 @@ docs/DESIGN.md            Gestaltungsregeln, Informationsarchitektur, Zuständig
 
 - **Herkunft:** Der Launcher ging ursprünglich aus [vom00/firestick-tv](https://github.com/vom00/firestick-tv) hervor, das keine Lizenz hat.
   Alle damals übernommenen Dateien sind neu geschrieben (Messung: `scripts/check-upstream-overlap.sh`, 0 wortgleiche Blöcke). Ganz
-  ausgeschlossen ist eine Ähnlichkeit damit nicht, weil die Neufassung die Idee und das Verhalten des Originals fortführt; eine
-  Lizenzanfrage an den Autor ist deshalb vor einer Veröffentlichung weiterhin ratsam. Das Repo bleibt bis dahin privat.
+  ausgeschlossen ist eine Ähnlichkeit damit nicht, weil die Neufassung die Idee und das Verhalten des Originals fortführt.
 - Schrift Nunito: SIL Open Font License 1.1 (liegt im Original und wird in den Bildschirmschoner kopiert).
 - Der Quelltext in `dream/` ist eigener Code ohne Lizenzdatei; die Wetterdaten stammen von Open-Meteo (CC BY 4.0, Nennung dort).
 - Die 30 Fotos stammen von Wikimedia Commons (CC BY-SA 3.0/4.0, CC BY 4.0). Urheber und Lizenz je Bild stehen in

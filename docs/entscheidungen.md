@@ -19,7 +19,7 @@
 - **Status**: angenommen
 - **Kontext**: Das Original (vom00/firestick-tv) hat keine Lizenz; ein öffentliches Gegenstück darf es nicht weitergeben, auch nicht als Patch (der enthält Original-Zeilen als Kontext).
 - **Entscheidung**: Alle übernommenen Dateien sind neu geschrieben (Messung: `scripts/check-upstream-overlap.sh`); `launcher/` ist die Quelle, `setup.sh` braucht das Original nicht mehr.
-- **Folgen**: Öffentlich möglich, aber nicht rechtlich zugesichert, weil die Neufassung mit Kenntnis des Originals entstand. Eine Lizenzanfrage an den Autor bleibt ratsam.
+- **Folgen**: Öffentlich möglich, aber nicht rechtlich zugesichert, weil die Neufassung mit Kenntnis des Originals entstand.
 - **Neu bewerten, wenn**: Der Autor eine Lizenz erteilt.
 
 ## 2026-10-28: HomeActivity in Bausteine zerlegt
