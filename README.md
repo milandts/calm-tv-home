@@ -1,4 +1,4 @@
-# TV Home
+# TV Home (calm-tv-home)
 
 An ad-free, tvOS-style home screen for the Amazon Fire TV Stick, plus a matching screensaver with weather.
 No account, no trackers, and the launcher itself has no internet permission.
