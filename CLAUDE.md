@@ -1,8 +1,8 @@
 # TV Home
 
-Werbefreier, tvOS-artiger Startbildschirm (Launcher) für den Amazon Fire TV Stick plus ein eigener Bildschirmschoner mit Wetter.
+Werbefreier, tvOS-artiger Startbildschirm (Launcher) für den Amazon Fire TV Stick und für Android TV / Google TV plus ein eigener Bildschirmschoner mit Wetter.
 Reines Android ohne Gradle (aapt2, javac 17, d8), Java für beide Apps, Bash und Python für Bau und Tests.
-Getestet nur auf Fire TV Stick HD/Lite (AFTSS, Fire OS 7, Android 9, 1080p).
+Echtes Gerät: nur Fire TV Stick HD/Lite (AFTSS, Fire OS 7, Android 9, 1080p). Android TV 14 und Google TV 14 nur im Emulator (AVD `atv34`, `gtv34`; Play Protect dort mit `settings put global package_verifier_enable 0` abschalten, sonst hängt `adb install`; `adb install` lieber als `adb push` plus `pm install`).
 
 **Bei Fehlern oder Auffälligkeiten zuerst `docs/betriebslog.md` lesen** und neue Fehler dort eintragen, sobald sie gefunden oder gelöst sind.
 

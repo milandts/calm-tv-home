@@ -16,7 +16,7 @@ final class DockStore {
     private static final String KEY = "dock";
     /** Erstausstattung, bis der Nutzer selbst sortiert. */
     private static final List<String> FIRST_USE = Arrays.asList(
-            "com.netflix.ninja", "com.amazon.firetv.youtube", "com.amazon.firebat",
+            "com.netflix.ninja", "com.amazon.firetv.youtube", "com.google.android.youtube.tv", "com.amazon.firebat",
             "com.disney.disneyplus", "com.spotify.tv.android", AppCatalog.SILK);
 
     private final SharedPreferences prefs;

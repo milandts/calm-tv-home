@@ -20,6 +20,9 @@ public final class UnitTests {
         galleryValues();
         settingsSearch();
         wallpaperRhythm();
+        platformDetection();
+        takeoverGuard();
+        keyboardRules();
         System.out.println(checks + " Prüfungen, " + FAILURES.size() + " Fehler");
         for (String failure : FAILURES) System.out.println("  FEHLER: " + failure);
         System.exit(FAILURES.isEmpty() ? 0 : 1);
@@ -32,6 +35,52 @@ public final class UnitTests {
 
     private static void equal(Object expected, Object actual, String what) {
         check(expected == null ? actual == null : expected.equals(actual), what + ": erwartet " + expected + ", war " + actual);
+    }
+
+    // ---- Eigene Bildschirmtastatur ---------------------------------------------------------------
+
+    private static void keyboardRules() {
+        check(KeyboardLayout.startsWord(""), "leeres Feld: ein Wort beginnt");
+        check(KeyboardLayout.startsWord("Max "), "nach Leerzeichen beginnt ein Wort");
+        check(KeyboardLayout.startsWord("Anna-"), "nach Bindestrich beginnt ein Wort");
+        check(!KeyboardLayout.startsWord("Mi"), "mitten im Wort beginnt keins");
+        check(KeyboardLayout.isUpper("", false), "am Anfang groß");
+        check(!KeyboardLayout.isUpper("Mi", false), "mitten im Wort klein");
+        check(KeyboardLayout.isUpper("Mi", true), "Umschalten macht mitten im Wort groß");
+        check(!KeyboardLayout.isUpper("", true), "Umschalten macht am Wortanfang klein");
+        equal("Ä", KeyboardLayout.shown("ä", true), "Umlaut groß");
+        equal("ä", KeyboardLayout.shown("ä", false), "Umlaut klein");
+        equal("ß", KeyboardLayout.shown("ß", true), "ß bleibt klein (nicht SS)");
+        equal("5", KeyboardLayout.shown("5", true), "Ziffer bleibt");
+        equal("Mil", KeyboardLayout.deleteLast("Mila"), "Löschen nimmt das letzte Zeichen");
+        equal("", KeyboardLayout.deleteLast(""), "Löschen im leeren Feld ändert nichts");
+        equal("a\uD83D\uDE00".substring(0, 1), KeyboardLayout.deleteLast("a\uD83D\uDE00"), "Löschen nimmt ein ganzes Zeichen (Ersatzpaar)");
+        int keys = 0;
+        for (String row : KeyboardLayout.ROWS) keys += row.length();
+        equal(40, keys, "vier Zeilen zu je 10 Tasten");
+        equal(34f, GlassKeyboard.keyHeightFor(500f, 6), "viel Platz: Tasten bleiben bei der Höchsthöhe");
+        equal(24f, GlassKeyboard.keyHeightFor(100f, 6), "wenig Platz: Tasten bleiben lesbar");
+        check(Math.abs(GlassKeyboard.keyHeightFor(184f, 6) - 164f / 6) < 0.001f, "Tastenhöhe teilt den Platz abzüglich der Lücken");
+    }
+
+    // ---- Plattform: Fire TV oder anderes Android TV ----------------------------------------------
+
+    private static void platformDetection() {
+        check(Platform.isFireTv(true, false), "Fire TV: Systemmerkmal genügt");
+        check(Platform.isFireTv(false, true), "Fire TV: Amazons Startseite genügt");
+        check(!Platform.isFireTv(false, false), "Android TV ohne Amazon-Merkmale ist kein Fire TV");
+    }
+
+    private static void takeoverGuard() {
+        TakeoverGuard guard = new TakeoverGuard();
+        check(guard.allow(0) && guard.allow(1_000) && guard.allow(2_000), "die ersten drei Übernahmen sind erlaubt");
+        check(!guard.allow(3_000), "die vierte innerhalb von 10 s wird gebremst");
+        check(!guard.allow(40_000), "während der Pause bleibt es gebremst");
+        check(guard.allow(70_000), "nach der Pause geht es wieder");
+        TakeoverGuard slow = new TakeoverGuard();
+        boolean allAllowed = true;
+        for (int i = 0; i < 10; i++) allAllowed &= slow.allow(i * 11_000L);
+        check(allAllowed, "seltene Übernahmen werden nie gebremst");
     }
 
     // ---- Opts: jede Einstellung ist vollständig und in sich stimmig ---------------------------------

@@ -1,6 +1,9 @@
 package app.calmtv.home;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -34,6 +37,11 @@ public class HomeKeyService extends AccessibilityService {
     private static final long QUICK_MENU_GRACE_MS = 2_000, TILE_FALLBACK_MS = 500, DIRECT_FALLBACK_MS = 2_500, TILE_RETRY_MS = 120;
     private static final int TILE_ATTEMPTS = 12;
 
+    /** Läuft der Dienst gerade (Android hat ihn gebunden)? Sicherer als die Liste der aktivierten Dienste, die nach einer Neuinstallation noch stimmt. */
+    static boolean isRunning() {
+        return running != null;
+    }
+
     /** Der laufende Dienst, solange Android ihn gebunden hat; der Einschlaf-Timer braucht ihn für den Ruhezustand. */
     private static volatile HomeKeyService running;
 
@@ -42,6 +50,7 @@ public class HomeKeyService extends AccessibilityService {
     private final Runnable tapTile = this::tapOurTile;
     private final Runnable removeCover = this::hideCover;
     private final Runnable askDirectly = () -> HomeLauncher.direct(this);
+    private final TakeoverGuard guard = new TakeoverGuard();
     private AmazonCover cover;
     private boolean isLongPress;
     private int tileAttempts;
@@ -102,6 +111,8 @@ public class HomeKeyService extends AccessibilityService {
             long now = SystemClock.uptimeMillis();
             if (previousPackage.equals(AMAZON_SETTINGS) && previousClass.contains(".hud.")) amazonAllowedUntil = now + QUICK_MENU_GRACE_MS;
             if (now >= amazonAllowedUntil) takeOverFromAmazon();
+        } else if (!pkg.equals(AMAZON_LAUNCHER) && isDeviceHome(pkg, cls)) {
+            takeOverFromDeviceHome();
         } else if (!pkg.equals(AMAZON_LAUNCHER)) {
             // Eine andere App kam nach vorn: ein noch wartender Start darf den Nutzer nicht wieder herausreißen.
             if (!"com.android.systemui".equals(pkg) && !"android".equals(pkg)) {
@@ -112,6 +123,27 @@ public class HomeKeyService extends AccessibilityService {
         }
         previousPackage = pkg;
         previousClass = cls;
+    }
+
+    /**
+     * Ist das Fenster die Startseite, die das Gerät für HOME wählt (bei Android TV und Google TV die von Google, bei anderen die des
+     * Herstellers)? Nur dann übernimmt der Dienst: Eine Meldung, ein Menü oder die Suche derselben App bleibt unberührt.
+     */
+    private boolean isDeviceHome(String pkg, String cls) {
+        Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo found = getPackageManager().resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY);
+        if (found == null || found.activityInfo == null) return false;
+        return pkg.equals(found.activityInfo.packageName) && cls.equals(found.activityInfo.name);
+    }
+
+    /** Die Startseite des Geräts ist aufgetaucht (nicht Amazons): abdecken und TV Home direkt starten, falls die Bremse es erlaubt. */
+    private void takeOverFromDeviceHome() {
+        if (!guard.allow(SystemClock.uptimeMillis())) {
+            Log.w(TAG, "too many takeovers in a row, pausing");
+            return;
+        }
+        showCover();
+        HomeLauncher.direct(this);
     }
 
     private void cancelFallbacks() {

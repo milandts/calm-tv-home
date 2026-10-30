@@ -108,7 +108,9 @@ final class HomeHeader {
         update();
         clock.setVisibility(visibleIf(Opts.SHOW_CLOCK));
         date.setVisibility(visibleIf(Opts.SHOW_DATE));
-        filter.setVisibility(visibleIf(Opts.SHOW_FILTER));
+        // Die Anzeige gehört zum DNS-Filter auf dem Fire TV; auf anderen Geräten wäre "Kein Filter" nur ein falscher Alarm.
+        boolean isFilterRelevant = Platform.isFireTv(context) || isFilterActive(context);
+        filter.setVisibility(isFilterRelevant ? visibleIf(Opts.SHOW_FILTER) : View.GONE);
         greeting.setVisibility(Config.val(Opts.GREETING) != 2 ? View.VISIBLE : View.GONE);
         weather.apply();
         weather.refresh(false);

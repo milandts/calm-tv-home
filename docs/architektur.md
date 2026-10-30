@@ -1,7 +1,7 @@
 # Architektur
 
 ## Das Problem
-Amazons Startseite auf dem Fire TV Stick zeigt Werbung und lässt sich nicht ersetzen. TV Home ist ein eigener, werbefreier Startbildschirm,
+Amazons Startseite auf dem Fire TV Stick zeigt Werbung und lässt sich nicht ersetzen; auch Googles Startseite auf Android TV und Google TV nicht ohne Weiteres. TV Home ist ein eigener, werbefreier Startbildschirm,
 den die HOME-Taste öffnet, plus ein eigener Bildschirmschoner. Beides soll ohne Konto, ohne Tracker und ohne Internetzugriff im Launcher laufen.
 
 ## Codemap
@@ -35,7 +35,7 @@ den die HOME-Taste öffnet, plus ein eigener Bildschirmschoner. Beides soll ohne
 ## Grenzen
 - Launcher und Bildschirmschoner sind zwei APKs mit demselben Schlüssel; nur so greift die Signatur-Permission. Der Bildschirmschoner kennt den Launcher nicht.
 - Vollbild-Ansichten (`Screen`) sprechen nur über `HomeHost` mit der Startseite; Menüs, Eingaben und Meldungen liegen in einer eigenen Ebene darüber (`modalLayer`).
-- HOME-Taste: Fire OS gibt HOME nur an Amazons Launcher; `HomeKeyService` (Bedienungshilfe) erkennt dessen Startseite und holt TV Home per Alarm nach vorn.
+- HOME-Taste: Fire OS gibt HOME nur an Amazons Launcher; `HomeKeyService` (Bedienungshilfe) erkennt dessen Startseite und holt TV Home per Alarm nach vorn. Auf Android TV und Google TV gilt derselbe Dienst mit Googles Startseiten (`GOOGLE_LAUNCHERS`) und direktem Start. `Platform` unterscheidet nur die Texte der Oberfläche; die Seite "Einrichtung" (`SettingsPagesSetup`) zeigt den Zustand und öffnet die Systemseiten.
 
 ## Querschnittsthemen
 - Einstellungen: Alle Werte sind ganze Zahlen mit Schlüssel in `Opts`; `Config` hält sie, eine Probeschicht erlaubt Vorschau mit "Änderungen behalten?". Die Sicherung (`Backup`) nimmt nur Schlüssel aus einer Liste auf.

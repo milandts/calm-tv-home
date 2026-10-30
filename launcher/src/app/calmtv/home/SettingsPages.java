@@ -25,6 +25,7 @@ final class SettingsPages {
     /** Die obersten Seiten (Kategorien) in der Reihenfolge der linken Spalte. */
     static List<SettingsModel.Page> build(HomeHost host) {
         List<SettingsModel.Page> categories = new ArrayList<>();
+        categories.add(SettingsPagesSetup.build(host));
         categories.add(SettingsPagesLook.build(host));
         categories.add(SettingsPagesApps.build(host));
         categories.add(screensaver(host));
@@ -44,9 +45,9 @@ final class SettingsPages {
                 .subtitle("Starten, Wetter und Startzeit").icon(Icons.SCHIRMSCHONER);
         page.add(SettingsPagesRows.info("Startet nach", "", Icons.LAUFZEIT, "zeit minuten leerlauf timeout standby",
                 () -> screenOffTimeout(host.context())));
-        page.add(SettingsPagesRows.button("Startzeit ändern", "Öffnet Amazons Einstellungen", Icons.EINSTELLUNGEN,
+        page.add(SettingsPagesRows.button("Startzeit ändern", "Öffnet die Systemeinstellungen", Icons.EINSTELLUNGEN,
                 "zeit minuten leerlauf timeout", host::openAmazonOverview));
-        page.add(new SettingsModel.Note("Die Startzeit stellst du in Amazons Einstellungen unter Töne und Bildschirm ein."));
+        page.add(new SettingsModel.Note("Die Startzeit stellst du in den Systemeinstellungen ein (bei Fire TV unter Töne und Bildschirm)."));
 
         final Intent preview = dreamIntent("PreviewActivity");
         if (host.canStart(preview)) {
@@ -62,7 +63,7 @@ final class SettingsPages {
             page.add(new SettingsModel.Note("Der Bildschirmschoner ist nicht installiert."));
         }
         page.add(new SettingsModel.Header("Einschlaf-Timer"));
-        page.add(SettingsPagesRows.choice("Dauer", "Gilt einmal und endet beim Neustart des Sticks", Icons.MOND,
+        page.add(SettingsPagesRows.choice("Dauer", "Gilt einmal und endet beim Neustart des Geräts", Icons.MOND,
                 "schlafen timer einschlafen ausschalten ruhezustand abschalten minuten",
                 Arrays.asList(SleepTimer.LABELS), () -> SleepTimer.selectedIndex(host.context()),
                 index -> SleepTimer.set(host.context(), index)));
@@ -118,7 +119,7 @@ final class SettingsPages {
 
     private static SettingsModel.Page system(HomeHost host) {
         SettingsModel.Page page = new SettingsModel.Page("system", "System")
-                .subtitle("Amazons Einstellungen und Diagnose").icon(Icons.SYSTEM);
+                .subtitle("Geräteeinstellungen und Diagnose").icon(Icons.SYSTEM);
         page.add(SettingsPagesRows.button("Alle Einstellungen",
                 "Töne und Bildschirm, Barrierefreiheit, Konto, Präferenzen und mehr", Icons.EINSTELLUNGEN,
                 "ton bildschirm anzeige barrierefreiheit konto praeferenzen sprache amazon",

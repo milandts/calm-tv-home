@@ -282,6 +282,7 @@ public class HomeActivity extends Activity implements HomeHost {
             if (event.getAction() == KeyEvent.ACTION_UP) screens.current().onMenu();
             return true;
         }
+        if (scene.modalLayer.getChildCount() == 0 && overlay.typeFromHardwareKey(event)) return true;
         return super.dispatchKeyEvent(event);
     }
 

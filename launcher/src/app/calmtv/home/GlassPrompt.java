@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 /**
  * Eingabe- und Bestätigungsdialog im Glas-Look. Scrim, Panel, Animation und Tastenfang teilt er mit {@link GlassMenu}.
+ * Auf Fire TV tippt man mit der eigenen {@link GlassKeyboard}, weil Amazons Tastatur dort über den Bildschirmrand läuft.
  * Beide Formen sind {@link Ui.Modal}: Zurück schließt ohne Aufruf, der Fokus kehrt dorthin zurück, wo man herkam.
  */
 final class GlassPrompt extends FrameLayout implements Ui.Modal {
@@ -30,16 +31,18 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
         void accept(String text);
     }
 
-    private static final float INPUT_WIDTH_DP = 520, CONFIRM_WIDTH_DP = 480, PAD_H_DP = 28, PAD_TOP_DP = 26, PAD_BOTTOM_DP = 24;
+    private static final float INPUT_WIDTH_DP = 520, KEYBOARD_WIDTH_DP = 640, CONFIRM_WIDTH_DP = 480, PAD_H_DP = 28, PAD_TOP_DP = 26, PAD_BOTTOM_DP = 24;
     private static final float BUTTON_HEIGHT_DP = 44, BUTTON_GAP_DP = 12, INPUT_TOP_SHARE = 0.14f;
     private static final long KEYBOARD_FIRST_MS = 250, KEYBOARD_RETRY_MS = 250, KEYBOARD_LAST_MS = 700, PROBE_TIMEOUT_MS = 400;
     private static final String DEFAULT_OK_LABEL = "Speichern";
-    private static final float FIELD_HEIGHT_DP = 48, FIELD_PAD_H_DP = 20;
+    private static final float FIELD_HEIGHT_DP = 48, FIELD_PAD_H_DP = 20, KEYBOARD_GAP_DP = 12, PANEL_PAD_DP = PAD_TOP_DP + PAD_BOTTOM_DP, TITLE_LINE_DP = 29, FIELD_TOP_DP = 18, KEYBOARD_SPARE_DP = 4;
 
     private ViewGroup layer;
     private View previousFocus, scrim;
     private ViewGroup panel;
     private EditText field;
+    private GlassKeyboard keyboard;   // eigene Tastatur (Fire TV); null heißt: Tastatur des Systems
+    private KeyboardInput input;
     private Chip cancelButton, okButton;   // Fokusziele neben dem Feld (bei confirm: Abbrechen und Bestätigung)
     private boolean closing, backProbePending;
 
@@ -150,12 +153,21 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
         fieldLp.topMargin = Ui.px(c, 18);
         box.addView(field, fieldLp);
 
-        field.setOnFocusChangeListener((v, focused) -> {
-            if (focused) pill.setStroke(focusPx, Look.focusRing()); else pill.setStroke(hairlinePx, Ui.HAIRLINE);
-            if (!focused) hideKeyboard();   // die erzwungene Tastatur würde sonst über den Buttons stehen bleiben
-        });
-        pill.setStroke(focusPx, Look.focusRing());   // das Feld hat von Anfang an den Fokus
-        field.setOnClickListener(v -> showKeyboardWithRetries(0));
+        boolean isOwnKeyboard = Platform.isFireTv(c);
+        pill.setStroke(focusPx, Look.focusRing());   // das Feld ist die aktive Eingabe (bei der Systemtastatur hat es den Fokus)
+        if (isOwnKeyboard) {
+            input = new KeyboardInput(c, field, confirmLabel, keyHeightFor(layerView, c), () -> submit(onOk));   // getippt wird über die Tasten, nicht über das Feld
+            keyboard = input.keyboard();
+            LinearLayout.LayoutParams keyboardLp = new LinearLayout.LayoutParams(-1, -2);
+            keyboardLp.topMargin = Ui.px(c, KEYBOARD_GAP_DP);
+            box.addView(keyboard, keyboardLp);
+        } else {
+            field.setOnFocusChangeListener((v, focused) -> {
+                if (focused) pill.setStroke(focusPx, Look.focusRing()); else pill.setStroke(hairlinePx, Ui.HAIRLINE);
+                if (!focused) hideKeyboard();   // die erzwungene Tastatur würde sonst über den Buttons stehen bleiben
+            });
+            field.setOnClickListener(v -> showKeyboardWithRetries(0));
+        }
 
         field.setOnEditorActionListener((v, actionId, e) -> {
             boolean enter = e != null && e.getKeyCode() == KeyEvent.KEYCODE_ENTER && e.getAction() == KeyEvent.ACTION_DOWN;
@@ -163,6 +175,10 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
             submit(onOk);
             return true;
         });
+        if (isOwnKeyboard) {   // Speichern liegt in der Tastatur, Zurück bricht ab: so passt alles auch bei knappem Platz
+            end(box, KEYBOARD_WIDTH_DP, Gravity.CENTER, 0, keyboard.firstKey());
+            return;
+        }
         cancelButton = button("Abbrechen", false, this::cancel);
         okButton = button(confirmLabel, false, () -> submit(onOk));
         box.addView(buttonRow(cancelButton, okButton, Ui.px(c, 28)));
@@ -171,6 +187,14 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
         int layerHeight = layerView.getHeight() > 0 ? layerView.getHeight() : Ui.usableHeight(c);
         end(box, INPUT_WIDTH_DP, Gravity.TOP | Gravity.CENTER_HORIZONTAL, Math.round(layerHeight * INPUT_TOP_SHARE), field);
         showKeyboardWithRetries(KEYBOARD_FIRST_MS);
+    }
+
+    /** Tastenhöhe, mit der die fünf Zeilen unter Titel und Feld noch in das auf 80 % der Höhe begrenzte Panel passen. */
+    private float keyHeightFor(ViewGroup layerView, Context c) {
+        int layerHeight = layerView.getHeight() > 0 ? layerView.getHeight() : Ui.usableHeight(c);
+        float roomDp = layerHeight / Ui.density(c) * GlassMenu.HEIGHT_SHARE;
+        float fixedDp = PANEL_PAD_DP + TITLE_LINE_DP * Ui.sp(1f) + FIELD_TOP_DP + FIELD_HEIGHT_DP + KEYBOARD_GAP_DP + KEYBOARD_SPARE_DP;
+        return GlassKeyboard.keyHeightFor(roomDp - fixedDp, KeyboardLayout.ROWS.length + 1);
     }
 
     private void openConfirm(ViewGroup layerView, String titleText, String message, String confirmLabel,
@@ -238,6 +262,10 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
      */
     @Override public void dismiss() {
         if (closing || backProbePending) return;
+        if (keyboard != null) {   // eigene Tastatur: es gibt nichts auszublenden
+            close(null);
+            return;
+        }
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (field == null || imm == null || field.getWindowToken() == null) {
             close(null);
@@ -289,8 +317,8 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
     private void focusInsideDialog() {
         if (closing || !isAttachedToWindow()) return;
         View focused = findFocus();
-        if (focused != null && (focused == field || focused == cancelButton || focused == okButton)) return;
-        View target = field != null ? field : (okButton != null ? okButton : cancelButton);
+        if (focused != null && (focused == field || focused == cancelButton || focused == okButton || keyboard != null && keyboard.hasFocus())) return;
+        View target = keyboard != null ? keyboard.firstKey() : field != null ? field : (okButton != null ? okButton : cancelButton);
         if (target != null) target.requestFocus();
     }
 
@@ -311,7 +339,11 @@ final class GlassPrompt extends FrameLayout implements Ui.Modal {
         int code = event.getKeyCode();
         if (code == KeyEvent.KEYCODE_BACK) return super.dispatchKeyEvent(event);   // Zurück kommt über Ui.dismissTopModal
         if (code == KeyEvent.KEYCODE_MENU || closing) return true;
-        if (navigate(event)) return true;
+        if (keyboard != null) {
+            if (input.typeFromHardwareKey(event)) return true;
+        } else if (navigate(event)) {
+            return true;
+        }
         return super.dispatchKeyEvent(event) || GlassMenu.trapDirections(this, event);
     }
 

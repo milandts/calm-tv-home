@@ -25,8 +25,8 @@ import java.util.concurrent.Executor;
 final class AppCatalog {
     static final String AMAZON_LAUNCHER = "com.amazon.tv.launcher";
     static final String SILK = "com.amazon.cloud9";
-    /** System-Apps, die auch ohne TV-Eintrag erscheinen dürfen (Appstore und Browser). */
-    private static final List<String> SYSTEM_WHITELIST = java.util.Arrays.asList("com.amazon.venezia", SILK);
+    /** System-Apps, die auch ohne TV-Eintrag erscheinen dürfen (Appstores und Browser von Amazon und Google). */
+    private static final List<String> SYSTEM_WHITELIST = java.util.Arrays.asList("com.amazon.venezia", SILK, "com.android.vending", "com.android.chrome");
 
     private final Context context;
     private final Map<String, AppEntry> entries = new LinkedHashMap<>();

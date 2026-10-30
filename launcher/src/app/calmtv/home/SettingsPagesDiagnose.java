@@ -87,7 +87,7 @@ final class SettingsPagesDiagnose {
     }
 
     /** Installiert und als Schoner gesetzt (secure screensaver_components nennt das Paket)? */
-    private static String screensaverState(Context context) {
+    static String screensaverState(Context context) {
         try {
             context.getPackageManager().getPackageInfo(DREAM_PACKAGE, 0);
         } catch (PackageManager.NameNotFoundException e) {

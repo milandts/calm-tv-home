@@ -31,6 +31,7 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
     private static final String SEARCH_URL = "https://www.bing.com/search?q=";
     private static final int COLUMNS = 5, TILE_WIDTH_DP = 148, SPACING_DP = 30, LEFT_DP = 64;
     private static final long KEYBOARD_DELAY_MS = 250;
+    private static final int KEYBOARD_WIDTH_DP = 700, KEYBOARD_PAD_DP = 12, KEYBOARD_BOTTOM_DP = 24, KEYBOARD_ROOM_DP = 240, RESULT_EDGE_DP = 12;
 
     private final HomeActivity home;
     private final HomeScene scene;
@@ -39,6 +40,7 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
     private FrameLayout layer;
     private ImageView background;
     private Glass searchBox;
+    private KeyboardInput searchInput;   // eigene Tastatur der Suche (Fire TV); sonst null
     private boolean isSearch;
     private String folderName;
     private int returnIndex = -1;   // Rasterkachel, von der aus ein Ordner geöffnet wurde
@@ -120,6 +122,14 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
         View first;
         if (isSearch) {
             first = addSearchField(rows);
+            if (searchInput != null) {   // Ergebnisse über der Tastatur: sie enden an der Kante, Rand für die Fokus-Vergrößerung bleibt
+                int edge = scene.px(RESULT_EDGE_DP);
+                scroll.setClipToPadding(true);   // an der Kante der Ansicht abschneiden; der Rand liegt in den Zeilen
+                scroll.setPadding(0, 0, 0, 1);   // Android schneidet nur bei Innenabstand ungleich null ab
+                rows.setPadding(edge, edge, edge, 0);
+                scrollParams.leftMargin = scene.px(LEFT_DP) - edge;
+                scrollParams.bottomMargin = scene.px(KEYBOARD_ROOM_DP);
+            }
         } else {
             List<Tile> tiles = folderTiles();
             fill(rows, tiles);
@@ -148,6 +158,7 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
             scene.glass.remove(searchBox);
             searchBox = null;
         }
+        searchInput = null;
         home.hideKeyboard(closing);
         closing.animate().alpha(0f).setDuration(Ui.ms(140)).withEndAction(() -> scene.root.removeView(closing)).start();
         scene.dock.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -209,7 +220,7 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
     // ---- Suche -----------------------------------------------------------------------------------
 
     /** Das Glas-Suchfeld: Tippen filtert Apps und Einstellungen, die Suchtaste der Tastatur fragt das Web (Silk). */
-    private EditText addSearchField(final LinearLayout rows) {
+    private View addSearchField(final LinearLayout rows) {
         Glass box = new Glass(home, scene.px(28));
         searchBox = box;
         scene.glass.add(box);
@@ -250,12 +261,32 @@ final class HomeOverlay implements HomeBackdrop.BlurUser {
             searchWeb(field.getText().toString().trim());
             return true;
         });
+        showResults(rows, "");
+        if (Platform.isFireTv(home)) return addSearchKeyboard(field);
         home.post(KEYBOARD_DELAY_MS, () -> {
             InputMethodManager keyboard = (InputMethodManager) home.getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
             if (keyboard != null && field.hasFocus()) keyboard.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
         });
-        showResults(rows, "");
         return field;
+    }
+
+    /** Amazons Tastatur läuft am Stick über den Rand (und das Suchfeld bekäme sie nicht einmal zu sehen): eigene Tastatur unten. */
+    private View addSearchKeyboard(EditText field) {
+        searchInput = new KeyboardInput(home, field, null, GlassKeyboard.MAX_KEY_HEIGHT_DP, null);
+        GlassMenu.CappedPanel panel = GlassMenu.newPanel(home);
+        int pad = scene.px(KEYBOARD_PAD_DP);
+        panel.setPadding(pad, pad, pad, pad);
+        panel.addView(searchInput.keyboard(), new LinearLayout.LayoutParams(-1, -2));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(scene.px(KEYBOARD_WIDTH_DP), -2, Gravity.BOTTOM | Gravity.START);
+        params.leftMargin = scene.px(LEFT_DP);
+        params.bottomMargin = scene.px(KEYBOARD_BOTTOM_DP);
+        layer.addView(panel, params);
+        return searchInput.keyboard().firstKey();
+    }
+
+    /** Zeichen einer angeschlossenen Tastatur gehen in die Suche, wenn sie mit der eigenen Tastatur läuft. */
+    boolean typeFromHardwareKey(KeyEvent event) {
+        return layer != null && searchInput != null && searchInput.typeFromHardwareKey(event);
     }
 
     /** Zeigt bei jeder Eingabe die passenden Ergebnisse (benannte Klasse: D8 dieser Build-Kette verträgt hier keine anonyme). */

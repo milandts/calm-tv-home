@@ -53,6 +53,7 @@ public final class SetupActivity extends Activity {
     private SetupRow[] nightRows;
     private boolean isResetArmed;
     private EditText field;
+    private SetupKeyboard keyboard;   // eigene Tastatur (Fire TV); null heißt: Tastatur des Systems
     private TextView status;
     private LinearLayout results;
     private ImageView backdrop;
@@ -285,6 +286,7 @@ public final class SetupActivity extends Activity {
         LinearLayout.LayoutParams fieldParams = new LinearLayout.LayoutParams(-1, -2);
         fieldParams.bottomMargin = style.px(4);
         panel.addView(field, fieldParams);
+        if (SetupKeyboard.isNeeded(this)) addOwnKeyboard(panel);
 
         status = style.text(this, "", 14, style.medium, SetupStyle.MUTED);
         status.setPadding(style.px(16), style.px(8), style.px(16), style.px(8));
@@ -304,8 +306,49 @@ public final class SetupActivity extends Activity {
         });
         addRow(panel, removeRow);
 
-        return page("Stadt für das Wetter", "Tippe den Namen ein und bestätige mit Enter. Danach wählst du die Stadt aus der Liste.",
+        return page("Stadt für das Wetter", (SetupKeyboard.isNeeded(this) ? "Tippe den Namen ein und wähle Suchen. Danach wählst du die Stadt aus der Liste."
+                        : "Tippe den Namen ein und bestätige mit Enter. Danach wählst du die Stadt aus der Liste."),
                 "Die Stadt wird nur auf dem Stick gespeichert.", panel);
+    }
+
+    /** Amazons Tastatur läuft am Stick über den Rand: getippt wird über die eigene Tastatur, das Feld zeigt nur den Text. */
+    private void addOwnKeyboard(LinearLayout panel) {
+        field.setFocusable(false);
+        field.setCursorVisible(false);
+        field.setHint("Stadt eintippen, dann Suchen");
+        keyboard = new SetupKeyboard(this, style, new CityTyping(this));
+        LinearLayout.LayoutParams keyboardParams = new LinearLayout.LayoutParams(-1, -2);
+        keyboardParams.topMargin = style.px(8);
+        keyboardParams.bottomMargin = style.px(4);
+        panel.addView(keyboard, keyboardParams);
+    }
+
+    /** Leitet die Tasten an das Suchfeld weiter (benannte Klasse: D8 dieser Build-Kette verträgt keine anonyme). */
+    private static final class CityTyping implements SetupKeyboard.Listener {
+        private final SetupActivity activity;
+
+        CityTyping(SetupActivity activity) {
+            this.activity = activity;
+        }
+
+        @Override public void onText(String text) {
+            activity.setFieldText(activity.field.getText().toString() + text);
+        }
+
+        @Override public void onDelete() {
+            String current = activity.field.getText().toString();
+            activity.setFieldText(current.isEmpty() ? current : current.substring(0, current.offsetByCodePoints(current.length(), -1)));
+        }
+
+        @Override public void onSearch() {
+            activity.search(activity.field.getText().toString().trim());
+        }
+    }
+
+    private void setFieldText(String text) {
+        field.setText(text);
+        field.setSelection(text.length());
+        keyboard.sync(text);
     }
 
     private StateListDrawable fieldBackground() {
@@ -372,7 +415,7 @@ public final class SetupActivity extends Activity {
         refreshRemoveRow();
         setStatus("");
         switchPage(mainPage, cityPage);
-        field.requestFocus();
+        (keyboard != null ? keyboard.firstKey() : field).requestFocus();
     }
 
     private void showMain() {

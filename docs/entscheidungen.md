@@ -46,3 +46,12 @@
 ## 2026-10-28: Kein Profil-, Szenen- und PIN-System
 - **Status**: angenommen (Wunsch des Nutzers)
 - **Entscheidung**: Ein Layout für alle; ein Kindermodus ist nur Komfort, keine Sperre. Keine zweite Sprache.
+
+## 2026-10-29: Android TV und Google TV mit demselben Bedienungshilfen-Dienst
+- **Status**: angenommen
+- **Kontext**: Das Projekt soll auch außerhalb des Fire TV Sticks laufen, und die Installation soll für Laien ohne Computer gehen.
+- **Entscheidung**: Ein Weg für alle Geräte: der Dienst `HomeKeyService` holt TV Home vor, sobald die Startseite des Geräts erscheint (Amazons per Alarm, Googles direkt). Einrichtung am Gerät über die Seite "Einrichtung" und die Bedienungshilfen; die Installation per App "Downloader" statt `adb`.
+- **Folgen**: Googles Startseite blitzt kurz auf (abgedeckt). Fire TV braucht für den Bildschirmschoner und den schnellen HOME-Weg weiter `adb`. Nur im Emulator geprüft.
+- **Verworfen**: HOME-Alias mit Rollenwahl (siehe `docs/NOTES.md`, wirkungslos wegen Googles `priority=2`); die zweite APK in der ersten bündeln und per Paketinstaller nachladen (bräuchte `REQUEST_INSTALL_PACKAGES`, schwächt die Datenschutz-Aussage, doppelt die Fotos).
+- **Neu bewerten, wenn**: ein echtes Gerät zeigt, dass der Dienst dort nicht greift, oder ein Gerät die Startseite wirklich austauschbar macht (dann Alias und Rolle als zusätzlicher Weg).
+

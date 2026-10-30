@@ -3,6 +3,19 @@
 All notable changes to TV Home. The visible version is in the file `VERSION`; every build also gets a higher internal build number (minutes since 2026-01-01).
 Versions 0.1.0 to 1.3.0 were numbered retroactively from the development history (dates are the real commit dates).
 
+## Unreleased
+
+- Fire TV: own on-screen keyboard for typing a name, a folder name or an app name, for the search, and for the weather city search of the screensaver. Amazon's keyboard on the Fire TV Stick covers the whole screen and runs over the bottom edge (space and delete are cut off), and an app cannot make it smaller; with the search field it did not show at all. Android TV and Google TV keep the system keyboard.
+- The keyboard has digits, QWERTZ with umlauts, shift, hyphen, space and delete; the first letter of each word is capitalized. In the name dialog, "Speichern" is a key and Back cancels, so everything fits at larger display scales as well (checked at density 320 and 400 on the Fire TV Stick). A connected keyboard still types directly.
+- Checked on a Fire TV Stick (AFTSS) and in Android TV / Google TV emulators; the screensaver start on Google TV through idle time could not be checked (needs root).
+
+## 1.5.0 - 2026-10-29
+
+- Android TV and Google TV: the HOME button now also works there. The accessibility service brings TV Home to the front when the device's home screen appears (only that window, not its pop-ups), and pauses for a minute if that happens three times within ten seconds. Checked in Android 14 emulator images (Android TV, Google TV) only, not on real hardware.
+- New settings page "Einrichtung": shows whether the HOME button and the screensaver are set up and opens the right system page, so the basic setup may need no computer. Not yet tried on real hardware, and newer Android versions may block the install-from-file route (see INSTALL.md).
+- Install guide rewritten: the easy way on the TV with the "Downloader" app comes first, the `adb` way second.
+- On other devices than Fire TV the "Kein Filter" hint is hidden unless a VPN is active; Google's YouTube app is in the first dock; Play Store and Chrome can appear in the app grid.
+
 ## 1.4.0 - 2026-10-29
 
 - Smoother open and close animation of the app grid on the Fire TV Stick (janky frames in the measured sequence 93 % -> about 55 %, median frame time 27 ms -> 17 ms); look and duration unchanged.

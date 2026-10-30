@@ -54,7 +54,8 @@ final class GlassMenu extends FrameLayout implements Ui.Modal {
         }
     }
 
-    private static final float MIN_WIDTH_DP = 280, MAX_WIDTH_DP = 320, HEIGHT_SHARE = 0.8f;
+    static final float HEIGHT_SHARE = 0.8f;   // so viel der Höhe der Ebene darf ein Panel einnehmen
+    private static final float MIN_WIDTH_DP = 280, MAX_WIDTH_DP = 320;
     private static final float ROW_MIN_HEIGHT_DP = 52, ROW_PAD_H_DP = 16, ICON_DP = 22, ICON_GAP_DP = 14;
     private static final float LIST_PAD_H_DP = 8, LIST_PAD_TOP_DP = 8, LIST_PAD_BOTTOM_DP = 16, ROW_GAP_DP = 2;
     private static final int WHITE_DIM = 0xCCFFFFFF;
