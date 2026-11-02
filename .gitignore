@@ -13,6 +13,7 @@ keystore.pass
 
 # Screenshots und Logs enthalten Gerätenamen, Seriennummern, Konto und IP-Adressen
 *.png
+!docs/images/*.png
 *.log
 report/
 screenshots/

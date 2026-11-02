@@ -1,5 +1,7 @@
 # TV Home (calm-tv-home)
 
+[![Checks](https://github.com/milandts/calm-tv-home/actions/workflows/check.yml/badge.svg)](https://github.com/milandts/calm-tv-home/actions/workflows/check.yml)
+
 An ad-free, tvOS-style home screen for the Amazon Fire TV Stick and for Android TV / Google TV, plus a matching screensaver with weather.
 No account, no trackers, and the launcher itself has no internet permission.
 
@@ -12,6 +14,18 @@ No account, no trackers, and the launcher itself has no internet permission.
 > | Other Fire TV models, Fire OS 8, Sony, Philips, Shield, Chromecast with Google TV, other screen sizes | not tested; reports welcome |
 >
 > Use at your own risk; system updates can change how the HOME button behaves.
+>
+> Details per device and known limits: [docs/kompatibilitaet.md](docs/kompatibilitaet.md) (German).
+
+## Screenshots
+
+<p>
+  <img src="docs/images/home.png" width="32%" alt="Home screen with clock, daily photo and glass dock">
+  <img src="docs/images/apps.png" width="32%" alt="App grid below the dock">
+  <img src="docs/images/settings.png" width="32%" alt="Settings page Einrichtung">
+</p>
+
+Taken in the Android TV 14 emulator (no personal apps or data). Photo: Mystic Beach, Vancouver Island, by Michal Klajban, CC BY-SA 4.0 (Wikimedia Commons).
 
 ## What it does
 
@@ -24,7 +38,7 @@ No account, no trackers, and the launcher itself has no internet permission.
 
 ## Privacy
 
-The HOME-button service is an accessibility service: it receives window-change events (which app is in front) to notice the device's own home screen, and opens TV Home then. It does not read screen content, keys or text, keeps nothing and has no network access.
+The HOME-button service is an accessibility service. It receives window-change events (which app is in front) to notice the device's own home screen, and opens TV Home then. It also declares two broader abilities: reading window content and filtering key presses. It uses the first only on Fire TV, as a fallback, to find and tap its own "TV Home" tile in Amazon's home screen, and the second only to react to the HOME key (every other key is passed on untouched). It keeps nothing, sends nothing and has no network access. If you do not want that, switch the service off: HOME then stays with the device's own home screen.
 
 
 The launcher has **no `INTERNET` permission** (Settings > Privacy shows this live). Only the screensaver app can reach the network, and only for the weather: the city name you type while searching, then the rounded coordinates of the city you chose, to two Open-Meteo hosts over HTTPS. Nothing is collected or logged. The launcher shows the last weather the screensaver fetched through a read-only provider that only apps signed with the same key may query.
@@ -54,7 +68,7 @@ Choose the weather city on the TV under Settings > Screensaver > Weather. Withou
 
 `scripts/check-all.sh` runs everything that needs no device (compile with javac and d8, layout rules, logic tests, doc references).
 Device tests: `scripts/test-matrix.py` (edge cases for safe margin, text size, dock size) and `scripts/snapshot-ui.py` (compares the UI before and after a refactor).
-Start with [CLAUDE.md](CLAUDE.md), [docs/architektur.md](docs/architektur.md) and [docs/DESIGN.md](docs/DESIGN.md) (German).
+Start with the English overview [docs/architecture.en.md](docs/architecture.en.md) and [tests/README.md](tests/README.md); the detailed documents [CLAUDE.md](CLAUDE.md), [docs/architektur.md](docs/architektur.md) and [docs/DESIGN.md](docs/DESIGN.md) are in German.
 
 ## Contributing
 

@@ -5,7 +5,18 @@ dazu ein eigener **Bildschirmschoner** mit Wetter. Dieses Repo enthält den Quel
 Bildschirmschoners (`dream/`) und Skripte, die daraus APKs bauen. Herkunft und Lizenzlage stehen unten unter "Lizenzen und Bildnachweise".
 
 Getestet auf einem Fire TV Stick HD / Lite (Modell AFTSS, Fire OS 7.7.1.7, Android 9), zusammen mit dem
-Debloat-Werkzeug [dumbtv](https://github.com/humblemuzzu/dumbtv).
+Debloat-Werkzeug [dumbtv](https://github.com/humblemuzzu/dumbtv). Android TV und Google TV (Android 14) laufen ebenfalls, bisher nur im Emulator;
+welches Gerät wie weit geprüft ist, steht in [docs/kompatibilitaet.md](docs/kompatibilitaet.md).
+
+## Bilder
+
+<p>
+  <img src="docs/images/home.png" width="32%" alt="Startseite mit Uhr, Tagesfoto und Glas-Dock">
+  <img src="docs/images/apps.png" width="32%" alt="App-Raster unter dem Dock">
+  <img src="docs/images/settings.png" width="32%" alt="Einstellungsseite Einrichtung">
+</p>
+
+Aufgenommen im Android-TV-14-Emulator (keine persönlichen Apps oder Daten). Foto: Mystic Beach, Vancouver Island, von Michal Klajban, CC BY-SA 4.0 (Wikimedia Commons).
 
 ## Was geändert wurde
 
@@ -170,8 +181,7 @@ docs/DESIGN.md            Gestaltungsregeln, Informationsarchitektur, Zuständig
   Alle damals übernommenen Dateien sind neu geschrieben (Messung: `scripts/check-upstream-overlap.sh`, 0 wortgleiche Blöcke). Ganz
   ausgeschlossen ist eine Ähnlichkeit damit nicht, weil die Neufassung die Idee und das Verhalten des Originals fortführt.
 - Schrift Nunito: SIL Open Font License 1.1 (liegt im Original und wird in den Bildschirmschoner kopiert).
-- Der Quelltext in `dream/` ist eigener Code ohne Lizenzdatei; die Wetterdaten stammen von Open-Meteo (CC BY 4.0, Nennung dort).
+- Der Quelltext (`launcher/`, `dream/`, `scripts/`) steht unter der MIT-Lizenz, siehe [LICENSE](LICENSE). Fremdes (Schrift, Fotos, Wetterdaten) hat eigene Bedingungen, siehe [THIRD_PARTY.md](THIRD_PARTY.md). Die Wetterdaten stammen von Open-Meteo (CC BY 4.0, Nennung dort).
 - Die 30 Fotos stammen von Wikimedia Commons (CC BY-SA 3.0/4.0, CC BY 4.0). Urheber und Lizenz je Bild stehen in
   `wallpapers.json` und werden in TV Home unter Einstellungen → Bildnachweise angezeigt. Die Bilder wurden auf 16:9 zugeschnitten
   und auf 1920×1080 skaliert; sie gelten **je Bild unter der Lizenz aus `wallpapers.json`**.
-- Die Skripte in diesem Repo haben keine eigene Lizenzdatei.

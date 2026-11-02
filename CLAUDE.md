@@ -37,7 +37,7 @@ Entscheidungen: `docs/entscheidungen.md`. Verzeichnis: `docs/README.md`.
 - Version: die sichtbare Nummer steht in `VERSION` (von Hand, bei einer Veröffentlichung erhöhen) und in `CHANGELOG.md`; die interne Build-Nummer zählt `scripts/build.sh` selbst hoch.
 - Oberflächentexte und Kommentare auf Deutsch, duzend, ohne Ausrufezeichen und Emojis; Dateien unter 600 Zeilen; Maße zentral in `Metrics` und `Ui`.
 - Commits: `<Art>: <Beschreibung>` (feat, fix, refactor, docs, test, chore, perf); der Git-Autor ist bewusst neutral (`tvhome <noreply@invalid>`).
-- Das Repo ist privat; ein öffentliches Gegenstück entsteht erst nach der Prüfung in `docs/NOTES.md` ("Eigenständigkeit").
+- Das öffentliche Repo ist ein bereinigter Export des Entwicklungs-Repos (ohne dessen Verlauf); Änderungen entstehen im Entwicklungs-Repo und gehen von dort in den Export. Herkunft und Abstand zum Original: `docs/NOTES.md` ("Eigenständigkeit").
 
 ## Sicherheit
 - Zugangsdaten, Schlüssel und personenbezogene Daten nie in Dateien, Doku oder Kontext. Screenshots und Logs bleiben aus dem Repo (`.gitignore`).

@@ -10,6 +10,8 @@ TV Home replaces what your HOME button opens. It is a normal app plus one access
 
 The interface is in German.
 
+More detail per device and known limits: [kompatibilitaet.md](https://github.com/milandts/calm-tv-home/blob/main/docs/kompatibilitaet.md) (German).
+
 ## The easy way: on the TV, no computer
 
 You need the TV remote and about ten minutes.
@@ -32,7 +34,7 @@ Select *Go*, wait for the download, then select **Install**. If the TV warns tha
 
 > Not yet verified on real hardware: (1) on a Fire TV Stick, whether *Home-Taste für TV Home* shows up in its accessibility page (the list was only checked on Android TV); (2) on newer Android versions (13 and later) the system may grey out the switch for an app that was installed from a file instead of a store ("restricted settings"). If either happens, use "With a computer" below. The check could not be done in the emulator.
 >
-> What the service does: it only watches which window comes to the front, to notice the device's own home screen, and then opens TV Home. It reads no text, sends nothing anywhere and has no network access. Switching it off in the same list gives you the device's own home screen back at once.
+> What the service does: it watches which window comes to the front, to notice the device's own home screen, and then opens TV Home. Android lists it with two broad abilities (reading window content and filtering key presses); it uses the first only on Fire TV, to tap its own "TV Home" tile in Amazon's home screen, and the second only for the HOME key. It sends nothing anywhere and has no network access. Switching it off in the same list gives you the device's own home screen back at once.
 
 That is all that is needed. Two optional extras:
 

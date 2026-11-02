@@ -1,0 +1,7 @@
+# Hält die an einen Commit gebundenen GitHub-Actions aktuell (ein Pull Request pro Woche, nur wenn es etwas gibt).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

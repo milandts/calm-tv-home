@@ -3,8 +3,12 @@
 All notable changes to TV Home. The visible version is in the file `VERSION`; every build also gets a higher internal build number (minutes since 2026-01-01).
 Versions 0.1.0 to 1.3.0 were numbered retroactively from the development history (dates are the real commit dates).
 
-## Unreleased
+## 1.6.0 - 2026-11-02
 
+- Corrected the privacy text: the HOME-button service declares access to window content and a key filter; the docs said it reads neither. It uses the first only on Fire TV to tap its own tile in Amazon's home screen, the second only for the HOME key. No code change.
+- Device overview (`docs/kompatibilitaet.md`): what was checked on which device, known limits, why `targetSdk` stays 28.
+- Short English architecture overview and a description of the tests; screenshots in the README; licence wording in the German README matches the MIT licence.
+- GitHub: Dependabot for the workflow actions (pinned to commits), read-only workflow permissions; `scripts/make-release.sh --draft` prepares a draft release after checking that the signing key matches the latest release.
 - Fire TV: own on-screen keyboard for typing a name, a folder name or an app name, for the search, and for the weather city search of the screensaver. Amazon's keyboard on the Fire TV Stick covers the whole screen and runs over the bottom edge (space and delete are cut off), and an app cannot make it smaller; with the search field it did not show at all. Android TV and Google TV keep the system keyboard.
 - The keyboard has digits, QWERTZ with umlauts, shift, hyphen, space and delete; the first letter of each word is capitalized. In the name dialog, "Speichern" is a key and Back cancels, so everything fits at larger display scales as well (checked at density 320 and 400 on the Fire TV Stick). A connected keyboard still types directly.
 - Checked on a Fire TV Stick (AFTSS) and in Android TV / Google TV emulators; the screensaver start on Google TV through idle time could not be checked (needs root).
